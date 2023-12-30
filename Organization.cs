@@ -192,6 +192,7 @@ namespace draft_project
 								else
 								{
 									Console.WriteLine("\nManager with ID " + managerId + " not found");
+									Employee.nextId--;
 									Console.WriteLine("\nEnter any key to Proceed");
 									Console.ReadKey();
 								}
