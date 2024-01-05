@@ -1,18 +1,19 @@
-﻿using System;
+using System;
 using System.CodeDom.Compiler;
 using System.Runtime.CompilerServices;
+//using NAudio.wave;
 
 class Employee
 {
-	static int nextId = 1;
+	public static int nextId = 1;
 
 	string title;
 	string name;
 	double monthlySalary;
 	int id;
-	public Employee child;
-	public Employee sibling;
-	public Employee parent;
+	public Employee child=null;
+	public Employee sibling = null;
+	public Employee parent=null;
 
 
 	public double MonthlySalary
@@ -124,6 +125,8 @@ namespace draft_project
 
 		static void Main(string[] args)
 		{
+			Console.BackgroundColor = ConsoleColor.Red;
+			
 			int count = 0;
 			Employee root = null;
 
@@ -131,8 +134,8 @@ namespace draft_project
 			{
 				Console.Clear();
 				Console.WriteLine("Please choose an option");
-				Console.WriteLine("1 - Hire an employee to the declared position (adding) (Manager's title if there is)");
-				Console.WriteLine("2 - Fire an employee (Delete)");
+				Console.WriteLine("1 - Hire an employee  ");
+				Console.WriteLine("2 - Fire an employee ");
 				Console.WriteLine("3 - Search for an Employee by ID");
 				Console.WriteLine("4 - Displaying hierarchy with ID ");
 				Console.WriteLine("5 - Update salary of an Employee");
@@ -140,6 +143,7 @@ namespace draft_project
 				Console.WriteLine("7 - Find Number of employees");
 				Console.WriteLine("8 - Swap 2 employees");
 				Console.WriteLine("9 - Exit Program");
+				Console.Write("\nYour choice : ");
 
 				try
 				{
@@ -162,8 +166,14 @@ namespace draft_project
 							{
 								root = Adding;
 								Console.WriteLine("\nEmployee " + Adding.Name + " is the first Employee added!");
+								System.Media.SoundPlayer player3 = new System.Media.SoundPlayer(@"C:\Users\Mohammed\Downloads\applause2.wav");
+								player3.Load();
+								player3.PlaySync();
+								Console.WriteLine("\n   \\o/");
+								Console.WriteLine("    |");
+								Console.WriteLine("   / \\");
 								Console.WriteLine("\nEnter any key to Proceed");
-								Console.ReadKey();
+								string hh=Console.ReadLine();
 								count++;
 							}
 							else
@@ -185,6 +195,13 @@ namespace draft_project
 										sibling_.sibling = Adding;
 									}
 									Console.WriteLine("\nEmployee " + Adding.Name + " added under Manager " + manager.Name);
+									System.Media.SoundPlayer player3 = new System.Media.SoundPlayer(@"C:\Users\Mohammed\Downloads\applause2.wav");
+									player3.Load();
+									player3.PlaySync();
+									Console.WriteLine("\n   \\o/");
+									Console.WriteLine("    |");
+									Console.WriteLine("   / \\");
+
 									Console.WriteLine("\nEnter any key to Proceed");
 									Console.ReadKey();
 									count++;
@@ -222,16 +239,28 @@ namespace draft_project
 										// Reattach children to the parent or the preceding sibling
 										if (delete.parent != null)
 										{
-											if (delete.parent.child == delete)
+											if (delete.parent.child.Id == delete.Id)
 											{
-												// Employee to be deleted is the first child, reattach its children to the parent
-												delete.parent.child = delete.child;
+												if (delete.sibling != null)
+												{
+													delete.sibling = delete.child;
+														root = delete.parent;
+													root.child = delete.sibling;
+													delete = null;
+												}
+												else
+												{ delete.parent.child = delete.child;
+													root = delete.parent;
+													root.child = delete.sibling;
+													delete = null;
+													// Employee to be deleted is the first child, reattach its children to the parent
+												}
 											}
 											else
 											{
 												// Employee to be deleted is not the first child, reattach its children to the preceding sibling
 												Employee previousSibling = delete.parent.child;
-												while (previousSibling.sibling != delete)
+												while (previousSibling.sibling.Id != delete.Id)
 												{
 													previousSibling = previousSibling.sibling;
 												}
@@ -253,14 +282,15 @@ namespace draft_project
 										// Employee has no children, remove from parent's child or sibling
 										if (delete.parent != null)
 										{
-											if (delete.parent.child == delete)
+											if (delete.parent.child.Id == delete.Id)
 											{
-												delete.parent.child = delete.sibling;
+												delete.parent.child.Id = delete.sibling.Id;
+												delete.sibling.child = delete.child;
 											}
 											else
 											{
 												Employee previous = delete.parent.child;
-												while (previous.sibling != delete)
+												while (previous.sibling.Id != delete.Id)
 												{
 													previous = previous.sibling;
 												}
@@ -272,10 +302,13 @@ namespace draft_project
 											// Employee is the root and has no children
 											root = null;
 										}
-										count--; // Decrease the count for a single deleted employee
+										//count--; // Decrease the count for a single deleted employee
 									}
-
+									count--;
 									Console.WriteLine("Employee " + delete.Name + " has been removed");
+									System.Media.SoundPlayer player3 = new System.Media.SoundPlayer(@"C:\Users\Mohammed\Downloads\BOO1.wav");
+									player3.Load();
+									player3.PlaySync();
 
 								}
 								else
@@ -415,14 +448,12 @@ namespace draft_project
 									//EMP1.MonthlySalary = tempMonthlySalary;
 
 									Console.WriteLine("\n\nSwapped successfully");
-									Console.WriteLine("\nEnter any key to Proceed");
-									Console.ReadKey();
+									
 								}
 								else
 								{
 									Console.WriteLine("One or both of the employees isn't found");
-									Console.WriteLine("\nEnter any key to Proceed");
-									Console.ReadKey();
+									
 								}
 							}
 							Console.WriteLine("\nEnter any key to Proceed");
@@ -442,6 +473,7 @@ namespace draft_project
 				catch (Exception ex)
 				{
 					Console.WriteLine("An error occurred: " + ex.Message);
+					
 					Console.WriteLine("\nEnter any key to Proceed");
 					Console.ReadKey();
 
